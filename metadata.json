@@ -1,0 +1,6 @@
+{
+  "name": "KITT Asistan",
+  "description": "Knight Rider KITT (Kara Şimşek) Türkçe Sesli ve Yapay Zeka Asistanı. %100 Ücretsiz, sesli etkileşim, ikonik kırmızı tarayıcı ve araç telemetrisi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
