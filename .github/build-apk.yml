@@ -1,0 +1,62 @@
+name: KITT APK Olustur
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Android APK Derle
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Projeyi al
+        uses: actions/checkout@v4
+
+      - name: Java 17 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Android SDK kur
+        uses: android-actions/setup-android@v3
+
+      - name: Android lisanslarini kabul et
+        run: yes | sdkmanager --licenses || true
+
+      - name: Android 36.1 SDK kur
+        run: |
+          sdkmanager "platform-tools"
+          sdkmanager "platforms;android-36.1"
+          sdkmanager "build-tools;36.0.0"
+
+      - name: Gradle 9.3.1 kur
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.3.1"
+
+      - name: Debug imza anahtari olustur
+        run: |
+          keytool -genkeypair \
+            -v \
+            -keystore debug.keystore \
+            -storepass android \
+            -alias androiddebugkey \
+            -keypass android \
+            -dname "CN=Android Debug,O=Android,C=US" \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000
+
+      - name: APK derle
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
+
+      - name: APK dosyasini yukle
+        uses: actions/upload-artifact@v4
+        with:
+          name: KITT-APK
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
